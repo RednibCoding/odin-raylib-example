@@ -12,7 +12,7 @@ Animation :: struct {
 	frame_timer: f32, // used to determine wether its time to advance to the next frame
 	cur_frame:   int,
 	frame_delay: f32, // Delay between each frame
-	id:          int,
+	uid:         int, // Needs to be unique (Each animation has to have a unique id)
 }
 
 update_animation :: proc(anim: ^Animation) {
@@ -117,14 +117,14 @@ main :: proc() {
 		texture     = load_texture_from_memory(#load("cat_run.png")),
 		num_frames  = 4,
 		frame_delay = 0.1,
-		id          = 1,
+		uid         = 1,
 	}
 
 	player_anim_idle := Animation {
 		texture     = load_texture_from_memory(#load("cat_idle.png")),
 		num_frames  = 2,
 		frame_delay = 0.4,
-		id          = 2,
+		uid         = 2,
 	}
 
 	current_anim := player_anim_idle
@@ -152,18 +152,18 @@ main :: proc() {
 		if rl.IsKeyDown(rl.KeyboardKey.A) {
 			player_vel.x = -player_speed
 			player_flipped = true
-			if current_anim.id != player_anim_run.id {
+			if current_anim.uid != player_anim_run.uid {
 				current_anim = player_anim_run
 			}
 		} else if rl.IsKeyDown(rl.KeyboardKey.D) {
 			player_vel.x = player_speed
 			player_flipped = false
-			if current_anim.id != player_anim_run.id {
+			if current_anim.uid != player_anim_run.uid {
 				current_anim = player_anim_run
 			}
 		} else {
 			player_vel.x = 0
-			if current_anim.id != player_anim_idle.id {
+			if current_anim.uid != player_anim_idle.uid {
 				current_anim = player_anim_idle
 			}
 		}
@@ -171,7 +171,7 @@ main :: proc() {
 		player_vel.y += gravity * rl.GetFrameTime()
 
 		if !player_grounded {
-			if current_anim.id != player_anim_idle.id {
+			if current_anim.uid != player_anim_idle.uid {
 				current_anim = player_anim_idle
 			}
 		}
