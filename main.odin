@@ -81,6 +81,10 @@ main :: proc() {
 		}
 		mem.tracking_allocator_destroy(&track_alloc)
 		fmt.eprintf("\n")
+
+		// Free the temp_allocator so we don't forget it
+		// The temp_allocator can be used to allocate temporary memory (for strings etc.)
+		free_all(context.temp_allocator)
 	}
 
 	rl.InitWindow(1280, 720, "My First Game")
@@ -262,6 +266,5 @@ main :: proc() {
 		os.write_entire_file("level.json", level_data)
 	}
 
-	free_all(context.temp_allocator)
 	delete(level.platforms)
 }
