@@ -95,11 +95,14 @@ main :: proc() {
 	player_flipped := false
 	gravity: f32 = 1000
 
-	load_texture_from_memory :: proc(data: []u8) -> rl.Texture2D {
+	load_texture_from_memory :: proc(data: []u8, filter: bool = false) -> rl.Texture2D {
 		img := rl.LoadImageFromMemory(".png", &data[0], i32(len(data)))
 		tex := rl.LoadTextureFromImage(img)
 		rl.UnloadImage(img)
-		rl.SetTextureFilter(tex, .BILINEAR)
+		// We only want a filter when it is not pixel art
+		if filter {
+			rl.SetTextureFilter(tex, .BILINEAR)
+		}
 		rl.SetTextureWrap(tex, .CLAMP)
 		return tex
 	}
