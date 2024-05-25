@@ -127,6 +127,7 @@ main :: proc() {
 
 	level: Level
 
+	// Load level data from file
 	if level_data, ok := os.read_entire_file("level.json", context.temp_allocator); ok {
 		if json.unmarshal(level_data, &level) != nil {
 			append(&level.platforms, rl.Vector2{-20, 20})
@@ -139,6 +140,7 @@ main :: proc() {
 	editing := false
 	edit_mode_btn_pressed := false
 
+	// Main loop
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
 		rl.ClearBackground({110, 184, 168, 255})
@@ -201,9 +203,11 @@ main :: proc() {
 			zoom   = screen_height / PixelWindowHeight,
 			// Put the origin of the camera to the center
 			offset = {screen_width / 2, screen_height / 2},
+			// Let the camera look at the player
 			target = player_pos,
 		}
 
+		// Render everything that should be clipped/viewed through the camera
 		rl.BeginMode2D(camera)
 
 		for platform in level.platforms {
@@ -236,7 +240,7 @@ main :: proc() {
 
 		rl.EndMode2D()
 
-		// Gui stuff
+		// Gui stuff (should not be affected/clipped by the camera)
 
 		edit_mode_btn_pressed = rl.GuiButton(
 			{20, 20, 200, 50},
